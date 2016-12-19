@@ -1,7 +1,9 @@
 #pragma once
 #include "StatusRegister.h"
 #include "Memory.h"
+#include <iostream>
 #include <stdio.h>
+#include <fstream>
 
 // The 6502 CPU core at the heart of the NES
 class CPU {
@@ -18,21 +20,33 @@ class CPU {
 	unsigned short S;
 	StatusRegister P;
 
-	unsigned short stack[0xFF] = { 0 };
+	const int stackOffset = 0x100;
 
 	// Opcode retainer
-	unsigned char opcode;
+	unsigned short opcode;
 
 	// Cycle Counter
 	unsigned int cycles;
 
 	// Memory
-	Memory memory;
+	Memory* memory;
+
+	// Temp
+	std::ofstream stream;
 
 public:
-	void Initialize();
-	void EmulateCycle();
+	void Initialize(Memory* memory);
+	void Reset();
+	short EmulateCycle(); // Returns the number of cycles the CPU used
+
+	// Checks for a NMI and if there is one, pushes processor state and jumps to handler
+	bool NMI;
+	void CheckNMI();
+
 	unsigned short ADC(unsigned short a, unsigned short b);
 	unsigned short SBC(unsigned short a, unsigned short b);
 	void CMP(unsigned short a, unsigned short b);
+	unsigned short IndX(unsigned short operand);
+	unsigned short JmpInd();
+	short GetRelative(unsigned short operand);
 };

@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\CPU">
+      <UniqueIdentifier>{f247a87f-a989-46a1-941a-24a906d01418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PPU">
+      <UniqueIdentifier>{86fe9878-33d2-4e48-938d-9dda6ee57496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPU">
+      <UniqueIdentifier>{6a8fa058-a4cd-47d0-aae1-cb1cf03138ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PPU">
+      <UniqueIdentifier>{fc1d1b3e-0f0c-49f9-839e-7bf4c979b76d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -21,24 +33,57 @@
     <ClCompile Include="NESEmu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StatusRegister.cpp">
+    <ClCompile Include="NES.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU.cpp">
+      <Filter>Source Files\CPU</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusRegister.cpp">
+      <Filter>Source Files\CPU</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLWrapper.cpp">
+      <Filter>Source Files\PPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files\PPU</Filter>
+    </ClCompile>
+    <ClCompile Include="PPU.cpp">
+      <Filter>Source Files\PPU</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorPalette.h">
+      <Filter>Header Files\PPU</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPU.h">
+    <ClInclude Include="NES.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="CPU.h">
+      <Filter>Header Files\CPU</Filter>
     </ClInclude>
     <ClInclude Include="StatusRegister.h">
+      <Filter>Header Files\CPU</Filter>
+    </ClInclude>
+    <ClInclude Include="PPU.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="PPURegisters.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLWrapper.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Pixel.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

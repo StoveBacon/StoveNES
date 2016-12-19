@@ -27,6 +27,7 @@ public:
 	void SetCarry(unsigned short carry);
 	void SetZero(unsigned short zero);
 	void SetInterrupt(unsigned short interrupt);
+	void SetDecimal(unsigned short decimal);
 	void SetOverflow(unsigned short overflow);
 	void SetNegative(unsigned short negative);
 

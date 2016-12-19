@@ -71,6 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\keith\Documents\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\keith\Documents\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -92,6 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,15 +148,26 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ColorPalette.h" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="NES.cpp" />
     <ClCompile Include="NESEmu.cpp" />
+    <ClCompile Include="PPU.cpp" />
+    <ClCompile Include="SDLWrapper.cpp" />
     <ClCompile Include="StatusRegister.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="NES.h" />
+    <ClInclude Include="Pixel.h" />
+    <ClInclude Include="PPU.h" />
+    <ClInclude Include="PPURegisters.h" />
+    <ClInclude Include="SDLWrapper.h" />
     <ClInclude Include="StatusRegister.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

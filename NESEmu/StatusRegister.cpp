@@ -14,6 +14,10 @@ void StatusRegister::SetInterrupt(unsigned short interrupt) {
 	I = interrupt;
 }
 
+void StatusRegister::SetDecimal(unsigned short decimal) {
+	D = decimal;
+}
+
 // Directly set negative flag
 void StatusRegister::SetNegative(unsigned short negative) {
 	N = negative;

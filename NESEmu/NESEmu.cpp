@@ -1,17 +1,12 @@
-#include "CPU.h"
-#include <iostream>
+#include "NES.h"
+#include "SDLWrapper.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-	CPU cpu;
+	NES nes;
 
-	cpu.Initialize();
-
-	cpu.EmulateCycle();
-	cpu.EmulateCycle();
-	cpu.EmulateCycle();
-
-	system("pause");
+	nes.Initialize();
+	nes.Run();
 
     return 0;
 }
