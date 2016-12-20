@@ -2,6 +2,7 @@
 
 void Tile::SetNametableIndex(unsigned short x, unsigned short y) {
 	nametableIndex = (x / TileSize) + ((y / TileSize) * NumColumns);
+	shiftIndex = 7;
 }
 
 void Tile::SetTileNumber(Memory* memory) {
@@ -36,14 +37,13 @@ unsigned short Tile::GetPaletteNumber() {
 	return paletteNumber;
 }
 
-unsigned short Tile::GetPaletteIndex(unsigned short x, unsigned short y) {
-	unsigned short pixelSliver; // 8x1 pixel sliver from tile
-	unsigned short paletteIndex;
+unsigned short Tile::GetPaletteIndex(unsigned short x) {
 	pixelSliver = pattern1;
-	paletteIndex = pixelSliver >> (7 - (x % TileSize));
+	paletteIndex = pixelSliver >> shiftIndex;
 	paletteIndex = paletteIndex & 0x01;
 	unsigned short bit2 = pattern2;
-	bit2 = bit2 >> (7 - (x % TileSize));
+	bit2 = bit2 >> shiftIndex;
 	bit2 = (bit2 & 0x01) << 1;
+	shiftIndex--;
 	return paletteIndex += bit2;
 }

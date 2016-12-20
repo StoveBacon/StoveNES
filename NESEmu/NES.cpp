@@ -7,10 +7,11 @@ void NES::Initialize() {
 }
 
 void NES::Run() {
+	unsigned short cyclesUsed;
 	for (;;) {
-		short cyclesUsed = cpu.EmulateCycle();
+		cyclesUsed = cpu.EmulateCycle();
 
-		for (int i = 0; i < cyclesUsed; i++) {
+		for (int i = 0; i < cyclesUsed * 3; i++) {
 			ppu.EmulateCycle();
 		}
 	}

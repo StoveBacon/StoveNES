@@ -5,6 +5,7 @@
 class SDLWrapper {
 	SDL_Window* window;
 	SDL_Surface* screenSurface;
+	SDL_Renderer* renderer;
 	int screenWidth;
 	int screenHeight;
 	int upscale;

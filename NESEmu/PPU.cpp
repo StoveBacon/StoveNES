@@ -76,7 +76,7 @@ void PPU::PostRender() {
 // Set PPU VBlank flag to trigger NMI in the CPU
 void PPU::VBlank() {
 	// Set on second cycle of VBlank
-	if (cScanline == 241 && cCycle == 0) {
+	if (cScanline == 241 && cCycle == 1) {
 		memory->WriteByte(PPUSTATUS, PPUSTATUS::VBLANK);
 		*cpuNMI = true;
 	}
@@ -102,7 +102,7 @@ void PPU::LoadTile() {
 void PPU::LoadPixel() {
 	pixel.x = cCycle;
 	pixel.y = cScanline;
-	pixel.paletteIndex = tile.GetPaletteIndex(cCycle, cScanline);
+	pixel.paletteIndex = tile.GetPaletteIndex(cCycle);
 	unsigned short colorByte = memory->ReadByteVRAM(0x3F00 + pixel.paletteIndex + (tile.GetPaletteNumber() * 4));
 	pixel.color = palette.colorMap[colorByte];
 }

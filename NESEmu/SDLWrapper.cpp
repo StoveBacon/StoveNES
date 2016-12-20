@@ -17,6 +17,7 @@ bool SDLWrapper::Initialize(int width, int height, int up) {
 		} else {
 			// Get window surface
 			screenSurface = SDL_GetWindowSurface(window);
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 		}
 	}
 
@@ -40,6 +41,6 @@ void SDLWrapper::UpdateWindowSurface() {
 
 void SDLWrapper::ShutDown() {
 	SDL_DestroyWindow(window);
-
+	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 }

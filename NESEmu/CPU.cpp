@@ -1438,7 +1438,9 @@ short CPU::EmulateCycle() {
 	}
 
 	// Check for NMI
-	CheckNMI();
+	if (memory->ReadByte(PPUCTRL) & PPUCTRL::NMI_ENABLE) {
+		CheckNMI();
+	}
 
 	return cycles;
 }

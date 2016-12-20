@@ -12,14 +12,19 @@ class Tile {
 	unsigned short address;
 	unsigned short pattern1;
 	unsigned short pattern2;
+	unsigned short shiftIndex;
 	unsigned short paletteNumber;
+
+	// Temporary storage variables
+	unsigned short pixelSliver;
+	unsigned short paletteIndex;
 
 public:
 	void SetNametableIndex(unsigned short x, unsigned short y);
 	void SetTileNumber(Memory* memory);
 	void SetTileAddress(unsigned short y);
 	void SetPatterns(Memory* memory);
-	unsigned short GetPaletteIndex(unsigned short x, unsigned short y);
+	unsigned short GetPaletteIndex(unsigned short x);
 	void SetPaletteNumber(unsigned short x, unsigned short y, Memory* memory);
 	unsigned short GetPaletteNumber();
 };
