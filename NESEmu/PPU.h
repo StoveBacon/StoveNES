@@ -21,6 +21,7 @@ class PPU {
 	Pixel pixel;
 
 	ColorPalette palette;
+	unsigned short backgroundPalette[16];
 
 public:
 	~PPU();

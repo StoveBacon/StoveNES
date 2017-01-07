@@ -33,17 +33,8 @@ void Tile::SetPaletteNumber(unsigned short x, unsigned short y, Memory* memory) 
 	paletteNumber = paletteNumber & 0x03;
 }
 
-unsigned short Tile::GetPaletteNumber() {
-	return paletteNumber;
-}
-
-unsigned short Tile::GetPaletteIndex(unsigned short x) {
-	pixelSliver = pattern1;
-	paletteIndex = pixelSliver >> shiftIndex;
-	paletteIndex = paletteIndex & 0x01;
-	unsigned short bit2 = pattern2;
-	bit2 = bit2 >> shiftIndex;
-	bit2 = (bit2 & 0x01) << 1;
+unsigned short Tile::GetPaletteIndex() {
+	paletteIndex = ((pattern1 >> shiftIndex) & 0x01) + (((pattern2 >> shiftIndex) & 0x01) << 1);
 	shiftIndex--;
-	return paletteIndex += bit2;
+	return paletteIndex;
 }

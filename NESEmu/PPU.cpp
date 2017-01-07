@@ -68,8 +68,10 @@ void PPU::RenderScanline() {
 }
 
 void PPU::PostRender() {
-	// Idles. Cheat currently by calling prerender
-	SDL.UpdateWindowSurface();
+	// Update the window surface. Cheat currently by calling prerender
+	if (cCycle == 0) {
+		SDL.UpdateWindowSurface();
+	}
 	PreRender();
 }
 
@@ -102,8 +104,8 @@ void PPU::LoadTile() {
 void PPU::LoadPixel() {
 	pixel.x = cCycle;
 	pixel.y = cScanline;
-	pixel.paletteIndex = tile.GetPaletteIndex(cCycle);
-	unsigned short colorByte = memory->ReadByteVRAM(0x3F00 + pixel.paletteIndex + (tile.GetPaletteNumber() * 4));
+	pixel.paletteIndex = tile.GetPaletteIndex();
+	unsigned short colorByte = memory->ReadByteVRAM(0x3F00 + pixel.paletteIndex + (tile.paletteNumber * 4));
 	pixel.color = palette.colorMap[colorByte];
 }
 

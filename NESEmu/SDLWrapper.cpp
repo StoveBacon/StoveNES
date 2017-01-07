@@ -33,10 +33,13 @@ void SDLWrapper::DrawPixel(unsigned short x, unsigned short y, SDL_Color color) 
 	rect.h = upscale;
 
 	SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, color.r, color.g, color.b));
+	//SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+	//SDL_RenderFillRect(renderer, &rect);
 }
 
 void SDLWrapper::UpdateWindowSurface() {
 	SDL_UpdateWindowSurface(window);
+	//SDL_RenderPresent(renderer);
 }
 
 void SDLWrapper::ShutDown() {
