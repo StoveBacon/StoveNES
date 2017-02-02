@@ -45,9 +45,6 @@
     <ClCompile Include="StatusRegister.cpp">
       <Filter>Source Files\CPU</Filter>
     </ClCompile>
-    <ClCompile Include="SDLWrapper.cpp">
-      <Filter>Source Files\PPU</Filter>
-    </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files\PPU</Filter>
     </ClCompile>
@@ -56,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="ColorPalette.h">
       <Filter>Header Files\PPU</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLWrapper.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,9 +77,6 @@
     <ClInclude Include="PPURegisters.h">
       <Filter>Header Files\PPU</Filter>
     </ClInclude>
-    <ClInclude Include="SDLWrapper.h">
-      <Filter>Header Files\PPU</Filter>
-    </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Header Files\PPU</Filter>
     </ClInclude>
@@ -84,6 +84,15 @@
       <Filter>Header Files\PPU</Filter>
     </ClInclude>
     <ClInclude Include="Memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

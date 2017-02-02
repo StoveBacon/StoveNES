@@ -4,7 +4,8 @@
 void NES::Initialize() {
 	cpu.Initialize(&memory);
 	cpu.Reset();
-	ppu.Initialize(&memory, &cpu.NMI);
+	ppu.Initialize(&memory, &cpu.NMI, &wrapper);
+	controller.Initialize(&memory, &wrapper);
 }
 
 void NES::Run() {
@@ -23,5 +24,6 @@ void NES::Run() {
 			lastTime = SDL_GetTicks();
 			totalCycles = 0;
 		}
+		controller.PollInput();
 	}
 }

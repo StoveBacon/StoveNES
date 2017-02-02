@@ -44,6 +44,10 @@ void Memory::WriteByte(unsigned short index, unsigned short byte) {
 	// Check for register writes
 	switch (index) {
 
+	case (OAMADDR): // OAM Address
+		OAMAddr = byte;
+		break;
+
 	case (OAMDATA): // OAM Write
 		WriteToOAM(byte);
 		break;
@@ -58,7 +62,7 @@ void Memory::WriteByte(unsigned short index, unsigned short byte) {
 		break;
 
 	case (OAMDMA): // Direct access OAM
-		LoadOAM();
+		LoadOAM(byte);
 		break;
 
 	default:
@@ -89,15 +93,18 @@ void Memory::IncrementAddressLatch() {
 }
 
 void Memory::WriteToOAM(unsigned short byte) {
-	OAM[addressLatch] = byte;
-	addressLatch++;
+	OAM[OAMAddr] = byte;
+	OAMAddr++;
+}
+
+unsigned short Memory::ReadByteOAM(unsigned short index) {
+	return OAM[index];
 }
 
 // Called on write to 0x4014
-void Memory::LoadOAM() {
-	unsigned short sourceMem = ReadByte(0x4014);
-	for (int i = 0; i < 0x100; i++) {
-		OAM[i] = ReadByte((sourceMem << 8) + i);
+void Memory::LoadOAM(unsigned short byte) {
+	for (int i = 0; i < 0x100 - OAMAddr; i++) {
+		OAM[i + OAMAddr] = ReadByte((byte << 8) + i);
 	}
 }
 

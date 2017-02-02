@@ -5,10 +5,11 @@
 #include "SDLWrapper.h"
 #include "Tile.h"
 #include "Pixel.h"
+#include "Sprite.h"
 #include <SDL.h>
 
 class PPU {
-	SDLWrapper SDL;
+	SDLWrapper *SDL;
 
 	unsigned short cScanline;
 	unsigned short cCycle;
@@ -28,7 +29,7 @@ public:
 
 	bool *cpuNMI;
 
-	void Initialize(Memory* memory, bool* cpuNMI);
+	void Initialize(Memory* memory, bool* cpuNMI, SDLWrapper *wrapper);
 
 	void EmulateCycle();
 	void PreRender();
@@ -39,4 +40,6 @@ public:
 	// Data retrieval
 	void LoadTile();
 	void LoadPixel();
+
+	void DrawSprites();
 };

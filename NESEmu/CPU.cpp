@@ -20,7 +20,7 @@ void CPU::Reset() {
 	// The stack ranges from 0x1FF to 0x100 (descending stack)
 	// The stack pointer is also offset by 0x100 in stack operations
 	S = 0xFD;
-
+	
 	stream.open("log.txt");
 }
 

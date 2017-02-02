@@ -10,10 +10,17 @@ class SDLWrapper {
 	int screenHeight;
 	int upscale;
 
+	SDL_Event event;
+
+	bool up, down, left, right, b, a, start, select;
+
 public:
 
-	bool Initialize(int width, int height, int up);
+	bool Initialize(int width, int height, int upscale);
 	void DrawPixel(unsigned short x, unsigned short y, SDL_Color color);
 	void UpdateWindowSurface();
+
+	unsigned short GetKeys();
+
 	void ShutDown();
 };

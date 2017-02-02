@@ -1,8 +1,10 @@
 #include "PPU.h"
 
-void PPU::Initialize(Memory* memory, bool* cpuNMI) {
+void PPU::Initialize(Memory* memory, bool* cpuNMI, SDLWrapper *wrapper) {
+	SDL = wrapper;
+
 	// init SDL
-	SDL.Initialize(256, 240, 1);
+	SDL->Initialize(256, 240, 2);
 
 	cScanline = 241;
 	cCycle = 0;
@@ -51,8 +53,7 @@ void PPU::RenderScanline() {
 			LoadTile();
 		}
 		LoadPixel();
-		SDL.DrawPixel(pixel.x, pixel.y, pixel.color);
-
+		SDL->DrawPixel(pixel.x, pixel.y, pixel.color);
 		cCycle++;
 
 	} else if (cCycle <= 340) {
@@ -70,7 +71,8 @@ void PPU::RenderScanline() {
 void PPU::PostRender() {
 	// Update the window surface. Cheat currently by calling prerender
 	if (cCycle == 0) {
-		SDL.UpdateWindowSurface();
+		DrawSprites();
+		SDL->UpdateWindowSurface();
 	}
 	PreRender();
 }
@@ -109,6 +111,37 @@ void PPU::LoadPixel() {
 	pixel.color = palette.colorMap[colorByte];
 }
 
+void PPU::DrawSprites() {
+	Sprite sprite;
+	for (int i = 0; i < 0x100; i += 4) {
+		sprite.y = memory->ReadByteOAM(i);
+		sprite.tileIndex = (memory->ReadByteOAM(i + 1) & 0b11111110) >> 1;
+		sprite.table = memory->ReadByteOAM(i + 1) & 0x01;
+		unsigned short attributes = memory->ReadByteOAM(i + 2);
+		sprite.flipVert = attributes & 0b10000000 >> 7;
+		sprite.flipHoriz = attributes & 0b01000000 >> 6;
+		sprite.priority = attributes & 0b00100000 >> 5;
+		sprite.palette = attributes & 0b11;
+		sprite.x = memory->ReadByteOAM(i + 3);
+		unsigned short spriteAddr = sprite.tileIndex * 0x20;
+		spriteAddr += sprite.table ? 0x10 : 0;
+
+		for (int j = 0; j < 8; j++) {
+			for (int k = 0; k < 8; k++) {
+				unsigned short paletteIndex = memory->ReadByteVRAM(spriteAddr + j ) >> (7 - k);
+				paletteIndex = paletteIndex & 0x01;
+				paletteIndex += ((memory->ReadByteVRAM(spriteAddr + j + 8) >> (7 - k)) & 0x01) << 1;
+				if (paletteIndex != 0)
+				{
+					SDL_Color color = palette.colorMap[memory->ReadByteVRAM(0x3F10 + paletteIndex + (sprite.palette * 4))];
+					SDL->DrawPixel(sprite.x + k, sprite.y + j, color);
+				}
+			}
+		}
+		
+	}
+}
+
 PPU::~PPU() {
-	SDL.ShutDown();
+	SDL->ShutDown();
 }

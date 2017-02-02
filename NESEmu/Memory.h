@@ -23,6 +23,7 @@ class Memory {
 	unsigned short VRAM[0x3FFF] = { 0 };
 
 	// Object attribute memory
+	unsigned short OAMAddr = 0;
 	unsigned short OAM[0x100] = { 0 };
 
 	// Latch for reading and writing between PPU and CPU
@@ -32,6 +33,7 @@ public:
 	unsigned short ReadByte(unsigned short index);
 	unsigned short ReadBytes(unsigned short index, unsigned int numBytes);
 	unsigned short ReadByteVRAM(unsigned short index);
+	unsigned short ReadByteOAM(unsigned short index);
 	void WriteByte(unsigned short index, unsigned short byte);
 
 	// PPU Functions
@@ -39,7 +41,7 @@ public:
 	void WriteToVRAM(unsigned short byte);
 	void WriteToOAM(unsigned short byte);
 	void IncrementAddressLatch();
-	void LoadOAM();
+	void LoadOAM(unsigned short byte);
 
 	void LoadCartridge(std::string path);
 };
