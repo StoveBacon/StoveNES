@@ -3,7 +3,7 @@
 
 struct Pixel {
 	unsigned short x, y;
-	unsigned short paletteIndex;
 	unsigned short paletteNumber;
-	SDL_Color color;
+	unsigned short paletteIndex;
+	SDL_Color *color;
 };

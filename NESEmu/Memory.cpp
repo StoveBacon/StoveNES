@@ -1,5 +1,15 @@
 #include "Memory.h"
 
+Memory* Memory::instance = NULL;
+
+Memory* Memory::Instance() {
+	if (instance == NULL) {
+		instance = new Memory();
+	}
+
+	return instance;
+}
+
 // Directly returns a byte from memory
 unsigned short Memory::ReadByte(unsigned short index) {
 	// Check for register reads
@@ -83,7 +93,21 @@ void Memory::WriteToVRAMAddress(unsigned short byte) {
 
 void Memory::WriteToVRAM(unsigned short byte) {
 	VRAM[addressLatch] = byte;
-	//printf("Addr: %X, Data: %X\n", addressLatch, byte);
+
+	// OPTIMIZATION: We need to watch for palette swaps so the PPU doesn't have to check for every single pixel
+	if (addressLatch >= PALETTE && addressLatch <= PALETTE_END) {
+		paletteHasChanged = true;
+	}
+}
+
+// If there has been an update clear the flag and return true
+bool Memory::PaletteHasChanged() {
+	if (paletteHasChanged) {
+		paletteHasChanged = false;
+		return true;
+	}
+
+	return false;
 }
 
 void Memory::IncrementAddressLatch() {

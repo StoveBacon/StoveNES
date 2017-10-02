@@ -15,7 +15,18 @@
 * 0x4020 - 0xFFFF PRG ROM, PRG RAM, Mapper Registers
 */
 
+// VRAM hardcode addresses
+#define LEFT_PATTERN_TABLE 0x0000
+#define RIGHT_PATTERN_TABLE 0x1000
+#define NAMETABLE_0 0x2000
+#define ATTRIBUTE_TABLE_0 0x23c0
+#define PALETTE 0x3F00
+#define PALETTE_END 0x3F1F
+
+
 class Memory {
+	static Memory *instance;
+
 	// CPU and PPU memory
 	unsigned char memory[0xFFFF] = { 0 };
 
@@ -29,7 +40,12 @@ class Memory {
 	// Latch for reading and writing between PPU and CPU
 	unsigned short addressLatch = 0;
 
+	// Optimization
+	bool paletteHasChanged; // Flag that gets reset when read
+
 public:
+	static Memory *Instance();
+
 	unsigned short ReadByte(unsigned short index);
 	unsigned short ReadBytes(unsigned short index, unsigned int numBytes);
 	unsigned short ReadByteVRAM(unsigned short index);
@@ -42,6 +58,7 @@ public:
 	void WriteToOAM(unsigned short byte);
 	void IncrementAddressLatch();
 	void LoadOAM(unsigned short byte);
+	bool PaletteHasChanged();
 
 	void LoadCartridge(std::string path);
 };

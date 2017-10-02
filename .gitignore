@@ -27,3 +27,16 @@
 *.exe
 *.out
 *.app
+
+# SDL
+/SDL2
+
+/ROMs
+/NESEmu/x64
+.db
+.opendb
+.suo
+/x64
+SDL2/
+*.db
+*.opendb

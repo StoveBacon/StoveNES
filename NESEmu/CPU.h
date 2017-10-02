@@ -1,6 +1,8 @@
 #pragma once
 #include "StatusRegister.h"
 #include "Memory.h"
+#include "FileManager.h"
+#include "Debug.h"
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -31,11 +33,10 @@ class CPU {
 	// Memory
 	Memory* memory;
 
-	// Temp
-	std::ofstream stream;
+	FileManager* fm;
 
 public:
-	void Initialize(Memory* memory);
+	void Initialize();
 	void Reset();
 	short EmulateCycle(); // Returns the number of cycles the CPU used
 

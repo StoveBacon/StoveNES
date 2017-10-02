@@ -1,17 +1,16 @@
 #include "CPU.h"
 
-void CPU::Initialize(Memory* memory) {
-	this->memory = memory;
+void CPU::Initialize() {
+	memory = Memory::Instance();
+	fm = FileManager::Instance();
 }
 
 void CPU::Reset() {
 	// Load the test cartridge
-	memory->LoadCartridge("../ROMs/DonkeyKong.nes");
-	//memory->LoadCartridge("../ROMs/nestest.nes");
+	memory->LoadCartridge(fm->romPath);
 
 	// Load the PC from the 6502's reset vector
 	PC = memory->ReadBytes(0xFFFC, 2);
-	//PC = 0xC000; // Temporary for the test ROM
 	
 	// Zero everything out for now
 	A = X = Y = cycles = NMI = 0;
@@ -20,8 +19,6 @@ void CPU::Reset() {
 	// The stack ranges from 0x1FF to 0x100 (descending stack)
 	// The stack pointer is also offset by 0x100 in stack operations
 	S = 0xFD;
-	
-	stream.open("log.txt");
 }
 
 short CPU::EmulateCycle() {
@@ -31,7 +28,7 @@ short CPU::EmulateCycle() {
 	opcode = memory->ReadByte(PC);
 
 	// Debug log the current state of the processor before the next instruction
-	//printf("PC: %X, O: %X, A: %X, X: %X, Y: %X, P:%X, S: %X, CYC: %X\n", PC, opcode, A, X, Y, P.ToByte(), S, cycles);
+	//Debug::LogCPU(PC, opcode, A, X, Y, P.ToByte(), S, cycles);
 	//stream << "PC: " << std::hex << PC << " O: " << std::hex << opcode << " A: " << std::hex << A << std::hex << " X: " << std::hex << X << " Y: " << std::hex << Y << " P: " << std::hex << P.ToByte() << " S: " << std::hex << S << std::endl;
 
 	PC += 1;
@@ -1041,6 +1038,7 @@ short CPU::EmulateCycle() {
 		value = value >> 1;
 		value = value | (P.C << 7);
 		memory->WriteByte(opcode, value);
+		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -1054,6 +1052,7 @@ short CPU::EmulateCycle() {
 		value = value >> 1;
 		value = value | (P.C << 7);
 		memory->WriteByte(opcode + X, value);
+		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -1067,6 +1066,7 @@ short CPU::EmulateCycle() {
 		value = value >> 1;
 		value = value | (P.C << 7);
 		memory->WriteByte(opcode, value);
+		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC += 2;
@@ -1080,6 +1080,7 @@ short CPU::EmulateCycle() {
 		value = value >> 1;
 		value = value | (P.C << 7);
 		memory->WriteByte(opcode + X, value);
+		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC += 2;

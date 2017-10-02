@@ -1,5 +1,18 @@
 #include "SDLWrapper.h"
 
+SDLWrapper* SDLWrapper::instance = NULL;
+
+SDLWrapper* SDLWrapper::Instance() {
+	if (instance == NULL) {
+		instance = new SDLWrapper();
+
+		// init SDL
+		instance->Initialize(256, 240, FileManager::Instance()->upscaleAmount);
+	}
+
+	return instance;
+}
+
 bool SDLWrapper::Initialize(int width, int height, int upscale) {
 	this->upscale = upscale;
 	screenWidth = width * upscale;
@@ -23,18 +36,37 @@ bool SDLWrapper::Initialize(int width, int height, int upscale) {
 		}
 	}
 
+	// Clear the buffer
+	SDL_Color black;
+	black.r = black.g = black.b = 0;
+	for (int x = 0; x < 256; x++) {
+		for (int y = 0; y < 240; y++) {
+			lastFrame[x][y] = &black;
+		}
+	}
+
 	return true;
 }
 
-void SDLWrapper::DrawPixel(unsigned short x, unsigned short y, SDL_Color color) {
+void SDLWrapper::DrawPixel(unsigned short x, unsigned short y, SDL_Color *color) {
+	
+	// Compare last frame to this frame. If they are the same don't bother drawing again
+	// Make things faster by comparing addresses instead of values
+	if (lastFrame[x][y] == color) {
+		return;
+	}
 
 	SDL_Rect rect;
 	rect.x = x * upscale;
 	rect.y = y * upscale;
 	rect.w = upscale;
 	rect.h = upscale;
+	SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, color->r, color->g, color->b));
+	lastFrame[x][y] = color;
+}
 
-	SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, color.r, color.g, color.b));
+void SDLWrapper::ClearWindow() {
+	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0, 0, 0));
 }
 
 void SDLWrapper::UpdateWindowSurface() {
