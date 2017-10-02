@@ -28,13 +28,9 @@
 *.out
 *.app
 
-# SDL
-/SDL2
-
+/Debug
 /ROMs
 /NESEmu/x64
-.db
-.opendb
 .suo
 /x64
 SDL2/
