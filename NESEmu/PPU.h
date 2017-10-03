@@ -2,13 +2,12 @@
 #include "Memory.h"
 #include "PPURegisters.h"
 #include "SDLWrapper.h"
-#include "Tile.h"
 #include "Pixel.h"
 #include "Sprite.h"
 #include "SubTile.h"
 #include <SDL.h>
 
-#define LIMIT_FRAMERATE false
+#define LIMIT_FRAMERATE true
 
 #define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 240
@@ -50,44 +49,3 @@ public:
 	void PostRender();
 	void VBlank();
 };
-
-//
-//class PPU {
-//	SDLWrapper *SDL;
-//
-//	unsigned short cScanline;
-//	unsigned short cCycle;
-//
-//	// NES internal memory
-//	Memory* memory;
-//
-//	// Rendering Data
-//	Tile tile;
-//	short lastTileNumber[32][300];
-//	Pixel pixel;
-//	unsigned short lastColorByte[300][300];
-//
-//	bool useLastTile;
-//
-//	ColorPalette palette;
-//	unsigned short backgroundPalette[16];
-//
-//public:
-//	~PPU();
-//
-//	bool *cpuNMI;
-//
-//	void Initialize(bool* cpuNMI);
-//
-//	void EmulateCycle();
-//	void PreRender();
-//	void RenderScanline();
-//	void PostRender();
-//	void VBlank();
-//
-//	// Data retrieval
-//	void LoadTile();
-//	void LoadPixel();
-//
-//	void DrawSprites();
-//};
