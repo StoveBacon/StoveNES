@@ -50,6 +50,11 @@ bool SDLWrapper::Initialize(int width, int height, int upscale) {
 
 void SDLWrapper::DrawPixel(unsigned short x, unsigned short y, SDL_Color *color) {
 	
+	// Don't render transparent colors
+	if (color->a == 0) {
+		return;
+	}
+
 	// Compare last frame to this frame. If they are the same don't bother drawing again
 	// Make things faster by comparing addresses instead of values
 	if (lastFrame[x][y] == color) {

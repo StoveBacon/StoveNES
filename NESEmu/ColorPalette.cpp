@@ -91,6 +91,9 @@ ColorPalette::ColorPalette() {
 	colorMap[0x1F] = black;
 	colorMap[0x2F] = black;
 	colorMap[0x3F] = black;
+
+	transparent = Color(0, 0, 0);
+	transparent.a = 0;
 }
 
 SDL_Color ColorPalette::Color(int r, int g, int b) {

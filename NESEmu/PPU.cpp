@@ -49,6 +49,20 @@ void PPU::PreRender() {
 }
 
 void PPU::RenderScanline() {
+	/*
+	// TEMP REMOVE THIS
+	if (currCycle == DRAWING_CYCLES) {
+		for (int i = 0; i < 64; i++) {
+			sprites[i].SetSpriteData(i);
+			Pixel *pixels = NULL;
+			pixels = sprites[i].RenderLine(currScanline);
+			if (pixels != NULL) {
+				for (int j = 0; j < 8; j++) {
+					SDL->DrawPixel(pixels[j].x % 256, pixels[j].y % 240, pixels[j].color);
+				}
+			}
+		}
+	}*/
 	if (currCycle < DRAWING_CYCLES) {
 		// Only load a tile once
 		if (currCycle % 8 == 0) {

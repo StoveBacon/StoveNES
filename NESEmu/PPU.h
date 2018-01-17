@@ -27,6 +27,7 @@ private:
 
 	unsigned short currScanline, currCycle;
 	SubTile *subTiles[32][240];
+	Sprite sprites[64];
 
 	Memory *memory;
 
