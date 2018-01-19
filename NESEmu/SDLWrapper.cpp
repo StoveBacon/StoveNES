@@ -42,10 +42,20 @@ bool SDLWrapper::Initialize(int width, int height, int upscale) {
 	for (int x = 0; x < 256; x++) {
 		for (int y = 0; y < 240; y++) {
 			lastFrame[x][y] = &black;
+			lastFrame[x][y]->a = 0;
 		}
 	}
 
+	hasQuit = false;
+
 	return true;
+}
+
+bool SDLWrapper::isNonTransparentPixel(int x, int y) {
+	if (lastFrame[x][y]->a != 0) {
+		return true;
+	}
+	return false;
 }
 
 void SDLWrapper::DrawPixel(unsigned short x, unsigned short y, SDL_Color *color) {
@@ -81,6 +91,10 @@ void SDLWrapper::UpdateWindowSurface() {
 unsigned short SDLWrapper::GetKeys() {
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
+		case SDL_QUIT:
+			hasQuit = true;
+			ShutDown();
+			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
 			case SDLK_a:
@@ -101,11 +115,13 @@ unsigned short SDLWrapper::GetKeys() {
 			case SDLK_k:
 				b = true;
 				break;
-			case SDLK_l:
+			case SDLK_RETURN:
 				start = true;
 				break;
 			case SDLK_ESCAPE:
 				select = true;
+				break;
+			default:
 				break;
 			}
 			break;
@@ -130,25 +146,27 @@ unsigned short SDLWrapper::GetKeys() {
 			case SDLK_k:
 				b = false;
 				break;
-			case SDLK_l:
+			case SDLK_RETURN:
 				start = false;
 				break;
 			case SDLK_ESCAPE:
 				select = false;
+				break;
+			default:
 				break;
 			}
 			break;
 		}
 	}
 	unsigned short keys = 0;
-	keys |= a << 7;
-	keys |= b << 6;
-	keys |= select << 5;
-	keys |= start << 4;
-	keys |= up << 3;
-	keys |= down << 2;
-	keys |= left << 1;
-	keys |= right;
+	keys |= a;
+	keys |= b << 1;
+	keys |= select << 2;
+	keys |= start << 3;
+	keys |= up << 4;
+	keys |= down << 5;
+	keys |= left << 6;
+	keys |= right << 7;
 	return keys;
 }
 

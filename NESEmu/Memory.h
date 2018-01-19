@@ -24,12 +24,14 @@
 #define SPRITE_PALETTE 0x3F10
 #define PALETTE_END 0x3F1F
 
+#define JOYPAD1 0x4016
 
 class Memory {
 	static Memory *instance;
 
 	// CPU and PPU memory
 	unsigned char memory[0xFFFF] = { 0 };
+	unsigned short vramBuffer = 0x00;
 
 	// PPU Video RAM
 	unsigned short VRAM[0x3FFF] = { 0 };
@@ -44,6 +46,7 @@ class Memory {
 	// Optimization
 	bool paletteHasChanged; // Flag that gets reset when read
 
+	int i = 0;
 public:
 	static Memory *Instance();
 
@@ -52,6 +55,8 @@ public:
 	unsigned short ReadByteVRAM(unsigned short index);
 	unsigned short ReadByteOAM(unsigned short index);
 	void WriteByte(unsigned short index, unsigned short byte);
+
+	void WriteControllerData(unsigned short data);
 
 	// PPU Functions
 	void WriteToVRAMAddress(unsigned short byte);
@@ -62,4 +67,6 @@ public:
 	bool PaletteHasChanged();
 
 	void LoadCartridge(std::string path);
+
+	bool controllerStrobe;
 };

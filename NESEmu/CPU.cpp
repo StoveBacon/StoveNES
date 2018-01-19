@@ -19,6 +19,8 @@ void CPU::Reset() {
 	// The stack ranges from 0x1FF to 0x100 (descending stack)
 	// The stack pointer is also offset by 0x100 in stack operations
 	S = 0xFD;
+
+	stream.open("debug_log.txt");
 }
 
 short CPU::EmulateCycle() {
@@ -29,7 +31,7 @@ short CPU::EmulateCycle() {
 
 	// Debug log the current state of the processor before the next instruction
 	//Debug::LogCPU(PC, opcode, A, X, Y, P.ToByte(), S, cycles);
-	//stream << "PC: " << std::hex << PC << " O: " << std::hex << opcode << " A: " << std::hex << A << std::hex << " X: " << std::hex << X << " Y: " << std::hex << Y << " P: " << std::hex << P.ToByte() << " S: " << std::hex << S << std::endl;
+	//stream << "PC: " << std::hex << PC << " O:" << std::hex << opcode << " A:" << std::hex << A << std::hex << " X:" << std::hex << X << " Y:" << std::hex << Y << " P:" << std::hex << P.ToByte() << " S:" << std::hex << S << std::endl;
 
 	PC += 1;
 
@@ -40,11 +42,11 @@ short CPU::EmulateCycle() {
 	unsigned short value;
 	unsigned short carry;
 	short offset;
-
 	/* Opcode decoding
 	*  Ordered by functionality, including all 
 	*  addressing modes for each operation
 	*/
+
 	switch (opcode) {
 
 		// --- Memory operations ---
@@ -143,7 +145,7 @@ short CPU::EmulateCycle() {
 
 	case (0xB6): // Zero Page, Y
 		operand = memory->ReadByte(PC);
-		X = memory->ReadByte(operand + Y);
+		X = memory->ReadByte((operand + Y) % 0x100);
 		P.DetermineNegative(X);
 		P.DetermineZero(X);
 		PC++;
@@ -274,7 +276,7 @@ short CPU::EmulateCycle() {
 
 	case (0x96): // Zero Page, Y
 		operand = memory->ReadByte(PC);
-		memory->WriteByte(operand + Y, X);
+		memory->WriteByte((operand + Y) % 0x100, X);
 		PC++;
 		cycles += 4;
 		break;
@@ -597,7 +599,7 @@ short CPU::EmulateCycle() {
 
 	case (0x75): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		A = ADC(A, memory->ReadByte(opcode + X));
+		A = ADC(A, memory->ReadByte((opcode + X) % 0x100));
 		P.DetermineNegative(A);
 		P.DetermineZero(A);
 		PC++;
@@ -652,7 +654,7 @@ short CPU::EmulateCycle() {
 		// DEC - Decrement
 	case (0xC6): // Zero Page
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode) - 1;
+		value = (memory->ReadByte(opcode) - 1) & 0xFF;
 		memory->WriteByte(opcode, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -662,8 +664,8 @@ short CPU::EmulateCycle() {
 
 	case (0xD6): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X) - 1;
-		memory->WriteByte(opcode + X, value);
+		value = (memory->ReadByte((opcode + X) % 0x100) - 1) & 0xFF;
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -672,8 +674,8 @@ short CPU::EmulateCycle() {
 
 	case (0xCE): // Absolute
 		opcode = memory->ReadBytes(PC, 2);
-		value = memory->ReadByte(opcode) - 1;
-		memory->WriteByte(opcode + X, value);
+		value = (memory->ReadByte(opcode) - 1) & 0xFF;
+		memory->WriteByte(opcode, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC += 2;
@@ -682,7 +684,7 @@ short CPU::EmulateCycle() {
 
 	case (0xDE): // Absolute, X
 		opcode = memory->ReadBytes(PC, 2);
-		value = memory->ReadByte(opcode + X) - 1;
+		value = (memory->ReadByte(opcode + X) - 1) & 0xFF;
 		memory->WriteByte(opcode + X, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -709,7 +711,7 @@ short CPU::EmulateCycle() {
 		// INC - Increment
 	case (0xE6): // Zero Page
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode) + 1;
+		value = (memory->ReadByte(opcode) + 1) & 0xFF;
 		memory->WriteByte(opcode, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -719,8 +721,8 @@ short CPU::EmulateCycle() {
 
 	case (0xF6): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X) + 1;
-		memory->WriteByte(opcode + X, value);
+		value = (memory->ReadByte((opcode + X) % 0x100) + 1) & 0xFF;
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -729,7 +731,7 @@ short CPU::EmulateCycle() {
 
 	case (0xEE): // Absolute
 		opcode = memory->ReadBytes(PC, 2);
-		value = memory->ReadByte(opcode) + 1;
+		value = (memory->ReadByte(opcode) + 1) & 0xFF;
 		memory->WriteByte(opcode, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -739,7 +741,7 @@ short CPU::EmulateCycle() {
 
 	case (0xFE): // Absolute, X
 		opcode = memory->ReadBytes(PC, 2);
-		value = memory->ReadByte(opcode + X) + 1;
+		value = (memory->ReadByte(opcode + X) + 1) & 0xFF;
 		memory->WriteByte(opcode + X, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -749,7 +751,7 @@ short CPU::EmulateCycle() {
 
 		// INX - Increment X
 	case (0xE8): // Implied
-		X = (X + 1) % 0x100;
+		X = (X + 1) & 0xFF;
 		P.DetermineNegative(X);
 		P.DetermineZero(X);
 		cycles += 2;
@@ -757,7 +759,7 @@ short CPU::EmulateCycle() {
 
 		// INY - Increment Y
 	case (0xC8):
-		Y = (Y + 1) % 0x100;
+		Y = (Y + 1) & 0xFF;
 		P.DetermineNegative(Y);
 		P.DetermineZero(Y);
 		cycles += 2;
@@ -784,7 +786,7 @@ short CPU::EmulateCycle() {
 
 	case (0xF5): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		A = SBC(A, memory->ReadByte(opcode + X));
+		A = SBC(A, memory->ReadByte((opcode + X) % 0x100));
 		P.DetermineNegative(A);
 		P.DetermineZero(A);
 		PC++;
@@ -862,10 +864,10 @@ short CPU::EmulateCycle() {
 
 	case (0x16): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X);
+		value = memory->ReadByte((opcode + X) % 0x100);
 		P.SetCarry((value & 0x80) >> 7);
 		value = (value << 1) & 0xFF;
-		memory->WriteByte(opcode + X, value);
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -919,10 +921,10 @@ short CPU::EmulateCycle() {
 
 	case (0x56): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X);
+		value = memory->ReadByte((opcode + X) % 0x100);
 		P.SetCarry(A & 0x01);
 		value = value >> 1;
-		memory->WriteByte(opcode + X, value);
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
 		PC++;
@@ -956,8 +958,8 @@ short CPU::EmulateCycle() {
 		// ROL - Rotate Left
 	case (0x2A): // Accumulator
 		carry = (A & 0x80) >> 7;
-		A = A << 1 & 0xFF;
-		A = A | P.C;
+		A = (A << 1) & 0xFF;
+		A = A | (unsigned short)P.C;
 		P.SetCarry(carry);
 		P.DetermineNegative(A);
 		P.DetermineZero(A);
@@ -968,8 +970,8 @@ short CPU::EmulateCycle() {
 		opcode = memory->ReadByte(PC);
 		value = memory->ReadByte(opcode);
 		carry = (value & 0x80) >> 7;
-		value = value << 1 & 0xFF;
-		value = value | P.C;
+		value = (value << 1) & 0xFF;
+		value = value | (unsigned short)P.C;
 		memory->WriteByte(opcode, value);
 		P.SetCarry(carry);
 		P.DetermineNegative(value);
@@ -980,11 +982,11 @@ short CPU::EmulateCycle() {
 
 	case (0x36): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X);
+		value = memory->ReadByte((opcode + X) % 0x100);
 		carry = (value & 0x80) >> 7;
-		value = value << 1 & 0xFF;;
-		value = value | P.C;
-		memory->WriteByte(opcode + X, value);
+		value = (value << 1) & 0xFF;;
+		value = value | (unsigned short)P.C;
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.SetOverflow(value);
@@ -996,8 +998,8 @@ short CPU::EmulateCycle() {
 		opcode = memory->ReadBytes(PC, 2);
 		value = memory->ReadByte(opcode);
 		carry = (value & 0x80) >> 7;
-		value = value << 1 & 0xFF;;
-		value = value | P.C;
+		value = (value << 1) & 0xFF;
+		value += P.C;
 		memory->WriteByte(opcode, value);
 		P.SetCarry(carry);
 		P.DetermineNegative(value);
@@ -1010,8 +1012,8 @@ short CPU::EmulateCycle() {
 		opcode = memory->ReadBytes(PC, 2);
 		value = memory->ReadByte(opcode + X);
 		carry = (value & 0x80) >> 7;
-		value = value << 1 & 0xFF;;
-		value = value | P.C;
+		value = (value << 1) & 0xFF;
+		value = value | (unsigned short)P.C;
 		memory->WriteByte(opcode + X, value);
 		P.SetCarry(carry);
 		P.DetermineNegative(value);
@@ -1047,11 +1049,11 @@ short CPU::EmulateCycle() {
 
 	case (0x76): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X);
+		value = memory->ReadByte((opcode + X) % 0x100);
 		carry = (value & 0x01);
 		value = value >> 1;
 		value = value | (P.C << 7);
-		memory->WriteByte(opcode + X, value);
+		memory->WriteByte((opcode + X) % 0x100, value);
 		P.SetCarry(carry);
 		P.DetermineNegative(value);
 		P.DetermineZero(value);
@@ -1207,7 +1209,7 @@ short CPU::EmulateCycle() {
 
 	case (0xD5): // Zero Page, X
 		opcode = memory->ReadByte(PC);
-		value = memory->ReadByte(opcode + X);
+		value = memory->ReadByte((opcode + X) % 0x100);
 		CMP(A, value);
 		PC++;
 		cycles += 4;
@@ -1460,6 +1462,10 @@ void CPU::CheckNMI() {
 	}
 }
 
+void CPU::CheckIRQ() {
+
+}
+
 // Adds with carry, setting the appropriate flags
 unsigned short CPU::ADC(unsigned short a, unsigned short b) {
 	unsigned int result = a + b + P.C;
@@ -1471,8 +1477,9 @@ unsigned short CPU::ADC(unsigned short a, unsigned short b) {
 
 	// If there is a carry
 	P.SetCarry(result > 0xFF);
+	P.SetZero(result);
 
-	result = result % 0x100;
+	result = result & 0xFF;
 
 	return result;
 }
@@ -1503,7 +1510,7 @@ unsigned short CPU::JmpInd() {
 	opcode = memory->ReadBytes(PC, 2);
 
 	// If a page boundry is crossed
-	if (opcode & 0xFF == 0xFF) {
+	if ((opcode & 0xFF) == 0xFF) {
 		result = memory->ReadByte(opcode);
 		result += memory->ReadByte(opcode & 0xFF00) << 8;
 	} else {

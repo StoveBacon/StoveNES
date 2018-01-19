@@ -2,6 +2,7 @@
 #include "Memory.h"
 #include "ColorPalette.h"
 #include "Pixel.h"
+#include <iterator>
 
 // Byte 0 is just the y value of the sprite
 #define SPRITE_Y_OFFSET 0x00

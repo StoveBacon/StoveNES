@@ -8,6 +8,8 @@
 #include <SDL.h>
 
 #define LIMIT_FRAMERATE true
+#define FRAMERATE 60
+#define TILE_DRAW_SKIP false
 
 #define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 240

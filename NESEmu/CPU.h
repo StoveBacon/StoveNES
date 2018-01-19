@@ -35,6 +35,8 @@ class CPU {
 
 	FileManager* fm;
 
+	std::ofstream stream;
+
 public:
 	void Initialize();
 	void Reset();
@@ -42,7 +44,9 @@ public:
 
 	// Checks for a NMI and if there is one, pushes processor state and jumps to handler
 	bool NMI;
+	bool IRQ;
 	void CheckNMI();
+	void CheckIRQ();
 
 	unsigned short ADC(unsigned short a, unsigned short b);
 	unsigned short SBC(unsigned short a, unsigned short b);

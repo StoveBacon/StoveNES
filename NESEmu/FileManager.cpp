@@ -13,7 +13,7 @@ FileManager* FileManager::Instance() {
 
 void FileManager::Initialize() {
 	std::ifstream file;
-	file.open("config.cfg");
+	file.open("config.txt");
 
 	if (file.is_open()) {
 		file >> romPath;

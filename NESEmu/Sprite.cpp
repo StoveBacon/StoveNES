@@ -13,13 +13,13 @@ void Sprite::SetSpriteData(int spriteNumber) {
 	// Each sprite is 4 bytes wide, so multiply spriteNumber by this to get the OAM offset
 	spriteNumber *= 4;
 
-	this->y = memory->ReadByteOAM(SPRITE_Y_OFFSET + spriteNumber);
+	this->y = memory->ReadByteOAM(SPRITE_Y_OFFSET + spriteNumber) + 1;
 	this->tileIndex = (memory->ReadByteOAM(INDEX_TABLE_OFFSET + spriteNumber) & INDEX_MASK) >> 1;
 	this->table = memory->ReadByteOAM(INDEX_TABLE_OFFSET + spriteNumber) & BANK_MASK;
 	attributes = memory->ReadByteOAM(ATTRIBUTE_OFFSET + spriteNumber);
-	this->flipHoriz = (attributes & FLIP_HORIZ_MASK) >> 7;
-	this->flipVert = (attributes & FLIP_VERT_MASK) >> 6;
-	this->priority = (attributes & PRIORITY_MASK) >> 5;
+	this->flipHoriz = (attributes & FLIP_HORIZ_MASK) >> 6;
+	this->flipVert = (attributes & FLIP_VERT_MASK) >> 5;
+	this->priority = (attributes & PRIORITY_MASK) >> 4;
 	this->paletteNumber = (attributes & PALETTE_MASK);
 	this->x = memory->ReadByteOAM(SPRITE_X_OFFSET + spriteNumber);
 
@@ -39,7 +39,7 @@ Pixel *Sprite::RenderLine(int y) {
 	unsigned short paletteIndex;
 
 	// Make sure this sprite is actually on the line given
-	if (y < this->y || y >= this->bottom) {
+	if (y < this->y + (y % 8) || y >= this->bottom + (y % 8)) {
 		return NULL;
 	}
 
@@ -55,7 +55,7 @@ Pixel *Sprite::RenderLine(int y) {
 	for (int i = 0; i < 8; i++) {
 		Pixel pixel;
 		pixel.x = this->x + i;
-		pixel.y = y;
+		pixel.y = this->y + (y % 8);
 		pixel.paletteNumber = this->paletteNumber;
 		paletteIndex = (pattern1 >> (7 - i)) & 0x01;
 		paletteIndex += ((pattern2 >> (7 - i)) & 0x01) << 1;
@@ -66,12 +66,15 @@ Pixel *Sprite::RenderLine(int y) {
 			pixel.color = &palette->colorMap[memory->ReadByteVRAM(SPRITE_PALETTE + paletteIndex + (this->paletteNumber * 4))];
 		}
 
-		if (flipHoriz) {
-			pixels[7 - i] = pixel;
-		} else {
-			pixels[i] = pixel;
-		}
+		pixels[i] = pixel;
 	}
 
+	if (flipHoriz) {
+		for (int i = 0; i < 4; i++) {
+			int temp = pixels[i].x;
+			pixels[i].x = pixels[7 - i].x;
+			pixels[7 - i].x = temp;
+		}
+	}
 	return pixels;
 }

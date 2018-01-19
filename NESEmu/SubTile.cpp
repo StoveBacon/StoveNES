@@ -42,7 +42,8 @@ void SubTile::SetTileNumber() {
 void SubTile::SetSubTileAddress() {
 	tileAddress = tileNumber * 0x10;    // 0x10 is the width of one tile datum
 	tileAddress += (y % TILE_SIZE);     // Because we're only manipulating a 1x8 section of an 8x8 tile we have to adjust for the y offset
-	tileAddress += RIGHT_PATTERN_TABLE; // TODO: choose correct pattern table automatically
+	unsigned short table = memory->ReadByte(PPUCTRL) & PPUCTRL::BG_TILE_SELECT;
+	tileAddress += table ? RIGHT_PATTERN_TABLE : LEFT_PATTERN_TABLE;
 }
 
 /*

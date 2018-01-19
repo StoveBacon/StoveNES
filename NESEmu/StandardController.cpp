@@ -6,6 +6,13 @@ void StandardController::Initialize() {
 }
 
 void StandardController::PollInput() {
-	unsigned short keys = wrapper->GetKeys();
-	memory->WriteByte(0x4016, keys);
+	if (memory->controllerStrobe) {
+		memory->WriteControllerData(wrapper->GetKeys());
+	}
+}
+
+unsigned int StandardController::getNextBit() {
+	unsigned int ret = keys & 0x01;
+	keys >> 1;
+	return ret;
 }

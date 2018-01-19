@@ -13,6 +13,10 @@ void NES::Run() {
 	unsigned int lastFrameTime = 0;
 	unsigned int totalCycles = 0;
 	for (;;) {
+		if (SDLWrapper::Instance()->hasQuit) {
+			return;
+		}
+
 		cyclesUsed = cpu.EmulateCycle();
 		totalCycles += cyclesUsed;
 
@@ -25,6 +29,7 @@ void NES::Run() {
 			lastFrameTime = SDL_GetTicks();
 			totalCycles = 0;
 		}
-		//controller.PollInput();
+		
+		controller.PollInput();
 	}
 }

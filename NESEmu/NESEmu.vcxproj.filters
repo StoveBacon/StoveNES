@@ -51,9 +51,6 @@
     <ClCompile Include="PPU.cpp">
       <Filter>Source Files\PPU</Filter>
     </ClCompile>
-    <ClCompile Include="ColorPalette.h">
-      <Filter>Header Files\PPU</Filter>
-    </ClCompile>
     <ClCompile Include="StandardController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubTile.h">
+      <Filter>Header Files\PPU</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorPalette.h">
       <Filter>Header Files\PPU</Filter>
     </ClInclude>
   </ItemGroup>
