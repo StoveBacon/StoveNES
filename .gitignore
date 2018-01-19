@@ -28,11 +28,13 @@
 *.out
 *.app
 
+# Generated and Library dependencies
 /Debug
 /ROMs
 /NESEmu/x64
 .suo
 /x64
 SDL2/
+/.vs/
 *.db
 *.opendb
