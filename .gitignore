@@ -30,6 +30,7 @@
 
 # Generated and Library dependencies
 /Debug
+/DebugLogs
 /ROMs
 /NESEmu/x64
 .suo
