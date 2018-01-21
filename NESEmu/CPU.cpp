@@ -1518,7 +1518,8 @@ short CPU::GetRelative(unsigned short operand) {
 	return (operand & 0x80) ? (0x100 - operand) * -1 : operand;
 }
 
-// Order: A, X, Y, PC, S, P, Opcode, operand
+// Order: A, X, Y, PC, S, P, opcode, operand, PCSteps
+// PCSteps is just the number of times the PC advanced this cycle
 unsigned short *CPU::Status() {
-	return new unsigned short[8]{ A, X, Y, lastPC, S, P.ToByte(), opcode, operand };
+	return new unsigned short[9]{ A, X, Y, lastPC, S, P.ToByte(), opcode, operand, (unsigned short)(PC - lastPC) };
 }

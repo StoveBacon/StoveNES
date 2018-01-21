@@ -25,7 +25,9 @@ void NES::Run() {
 		}
 		
 		Debug::PrintFPS(&lastFrameTime, &totalCycles);
-		Debug::LogCPUStatus(cpu.Status());
+		if (LOG_CPU) {
+			Debug::LogCPUStatus(cpu.Status());
+		}
 
 		controller.PollInput();
 	}
