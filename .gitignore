@@ -39,3 +39,5 @@ SDL2/
 /.vs/
 *.db
 *.opendb
+NESEmu/Debug_Log_Old.txt
+NESEmu/DebugLogs/
