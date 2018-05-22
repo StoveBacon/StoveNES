@@ -24,6 +24,6 @@ public:
 	void Initialize();
 
 	void LoadDebugMap();
-	void DebugLog(std::string string);
+	void DebugLog(std::string const& string);
 	std::map<std::string, std::string> *GetDebugMap();
 };

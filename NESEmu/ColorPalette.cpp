@@ -10,8 +10,6 @@ ColorPalette *ColorPalette::Instance() {
 }
 
 ColorPalette::ColorPalette() {
-	SDL_Color color;
-
 	colorMap[0x00] = Color(124, 124, 124);
 	colorMap[0x10] = Color(188, 188, 188);
 	colorMap[0x20] = Color(248, 248, 248);

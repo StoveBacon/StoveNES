@@ -29,7 +29,7 @@ void FileManager::Initialize() {
 	gameName.erase(gameName.begin(), gameName.begin() + static_cast<int>(gameName.find_last_of("/")) + 1);
 }
 
-void FileManager::DebugLog(std::string string) {
+void FileManager::DebugLog(std::string const& string) {
 	if (debug == NULL) {
 		debug = new std::ofstream;
 		std::stringstream debugPath;

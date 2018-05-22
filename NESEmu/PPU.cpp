@@ -106,7 +106,6 @@ void PPU::PostRender() {
 		paletteHasChanged = false;
 	}
 	if (currCycle == SCREEN_WIDTH && LIMIT_FRAMERATE) {
-		int t = SDL_GetTicks();
 		if (SDL_GetTicks() - lastFrameTime < 1000 / FRAMERATE) {
 			SDL_Delay((1000 / FRAMERATE) - (SDL_GetTicks() - lastFrameTime));
 		}
