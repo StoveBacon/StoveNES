@@ -10,8 +10,6 @@ ColorPalette *ColorPalette::Instance() {
 }
 
 ColorPalette::ColorPalette() {
-	SDL_Color color;
-
 	colorMap[0x00] = Color(124, 124, 124);
 	colorMap[0x10] = Color(188, 188, 188);
 	colorMap[0x20] = Color(248, 248, 248);
@@ -91,6 +89,9 @@ ColorPalette::ColorPalette() {
 	colorMap[0x1F] = black;
 	colorMap[0x2F] = black;
 	colorMap[0x3F] = black;
+
+	transparent = Color(0, 0, 0);
+	transparent.a = 0;
 }
 
 SDL_Color ColorPalette::Color(int r, int g, int b) {

@@ -24,11 +24,14 @@ public:
 	static SDLWrapper* Instance();
 
 	bool Initialize(int width, int height, int upscale);
+	bool isNonTransparentPixel(int x, int y);
 	void DrawPixel(unsigned short x, unsigned short y, SDL_Color *color);
 	void UpdateWindowSurface();
 	void ClearWindow();
 
 	unsigned short GetKeys();
+
+	bool hasQuit;
 
 	void ShutDown();
 };

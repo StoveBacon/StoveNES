@@ -11,4 +11,5 @@ public:
 
 	static ColorPalette *Instance();
 	SDL_Color colorMap[64];
+	SDL_Color transparent;
 };

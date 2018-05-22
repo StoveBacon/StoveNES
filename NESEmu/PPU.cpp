@@ -49,6 +49,24 @@ void PPU::PreRender() {
 }
 
 void PPU::RenderScanline() {
+	
+	// TEMP REMOVE THIS
+	if (currCycle == DRAWING_CYCLES && (memory->ReadByte(PPUMASK) & PPUMASK::SPRITE_ENABLE)) {
+		for (int i = 0; i < 64; i++) {
+			sprites[i].SetSpriteData(i);
+			Pixel *pixels = NULL;
+			pixels = sprites[i].RenderLine(currScanline);
+			if (pixels != NULL) {
+				for (int j = 0; j < 8; j++) {
+					SDL->DrawPixel(pixels[j].x, pixels[j].y % 240, pixels[j].color);
+					// Sprite 0 hit
+					if (i == 0 && SDLWrapper::Instance()->isNonTransparentPixel(pixels[j].x, pixels[j].y)) {
+						//memory->WriteByte(PPUSTATUS, SPRITE_0_HIT);
+					}
+				}
+			}
+		}
+	}
 	if (currCycle < DRAWING_CYCLES) {
 		// Only load a tile once
 		if (currCycle % 8 == 0) {
@@ -66,7 +84,7 @@ void PPU::RenderScanline() {
 				useOldTile = true;
 			}
 		}
-		if (!useOldTile) {
+		if (!useOldTile || !TILE_DRAW_SKIP) {
 			SDL->DrawPixel(currCycle, currScanline, subTiles[currCycle / 8][currScanline]->PixelAt(currCycle % 8)->color);
 		}
 		currCycle += 1;
@@ -88,9 +106,8 @@ void PPU::PostRender() {
 		paletteHasChanged = false;
 	}
 	if (currCycle == SCREEN_WIDTH && LIMIT_FRAMERATE) {
-		int t = SDL_GetTicks();
-		if (SDL_GetTicks() - lastFrameTime < 1000 / 60) {
-			SDL_Delay((1000 / 60) - (SDL_GetTicks() - lastFrameTime));
+		if (SDL_GetTicks() - lastFrameTime < 1000 / FRAMERATE) {
+			SDL_Delay((1000 / FRAMERATE) - (SDL_GetTicks() - lastFrameTime));
 		}
 		lastFrameTime = SDL_GetTicks();
 	}

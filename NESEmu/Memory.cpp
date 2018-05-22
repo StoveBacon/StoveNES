@@ -12,17 +12,50 @@ Memory* Memory::Instance() {
 
 // Directly returns a byte from memory
 unsigned short Memory::ReadByte(unsigned short index) {
+
+	// Handle mirroring
+	if (index >= 0x1000 && index <= 0x1FFF) {
+		index = index % 0x0800;
+	}
+	if (index >= 0x2008 && index <= 0x3FFF) {
+		index = index % 8;
+		index += 0x2000;
+	}
+
 	// Check for register reads
 	switch (index) {
 
-	case (PPUSTATUS):
-		addressLatch = 0;
+		case (PPUSTATUS):
+			addressLatch = 0;
+			break;
+
+		case (JOYPAD1):
+		{
+			unsigned short temp = memory[JOYPAD1];
+			memory[JOYPAD1] = temp >> 1;
+			return temp & 1;
+			// Temp to get nestest working
+			if ((i % 8) == 3) {
+				i++;
+				return 1;
+			}
+			else
+			{
+				i++;
+				return 0;
+			}
+		}
 		break;
 
-	case (PPUDATA):
-		unsigned short tempAddr = addressLatch;
-		IncrementAddressLatch();
-		return VRAM[tempAddr];
+		case (PPUDATA):
+		{
+			unsigned short tempAddr = addressLatch;
+			unsigned short tempBuffer = vramBuffer; // For whatever reason the PPU holds a buffer to the last vram data and THEN updates it
+			vramBuffer = VRAM[tempAddr];
+			IncrementAddressLatch();
+			return tempBuffer;
+		}
+		break;
 	}
 
 	return memory[index];
@@ -39,9 +72,9 @@ unsigned short Memory::ReadBytes(unsigned short index, unsigned int numBytes) {
 	for (int i = numBytes - 1; i >= 0; i--) {
 		// Provide Zero Page wraparound
 		if (index <= 0xFF) {
-			mem = mem | (memory[(index + i) % 0x100] << (i * 8));
+			mem = mem | (ReadByte((index + i) % 0x100) << (i * 8));
 		} else {
-			mem = mem | (memory[index + i] << (i * 8));
+			mem = mem | (ReadByte(index + i) << (i * 8));
 		}
 	}
 
@@ -75,10 +108,28 @@ void Memory::WriteByte(unsigned short index, unsigned short byte) {
 		LoadOAM(byte);
 		break;
 
+	case (JOYPAD1): // Controller Write
+		if (byte == 0) {
+			controllerStrobe = false;
+		}
+		else if (byte & 0x01)
+		{
+			controllerStrobe = true;
+		}
+		break;
+
 	default:
-		memory[index] = byte;
+		if (byte & 0xFF00) {
+			memory[index] = (byte & 0xFF00) >> 8;
+			memory[index + 1] = byte & 0xFF;
+		} else
+			memory[index] = byte;
 		break;
 	}
+}
+
+void Memory::WriteControllerData(unsigned short data) {
+	memory[JOYPAD1] = data;
 }
 
 void Memory::WriteToVRAMAddress(unsigned short byte) {
@@ -127,8 +178,8 @@ unsigned short Memory::ReadByteOAM(unsigned short index) {
 
 // Called on write to 0x4014
 void Memory::LoadOAM(unsigned short byte) {
-	for (int i = 0; i < 0x100 - OAMAddr; i++) {
-		OAM[i + OAMAddr] = ReadByte((byte << 8) + i);
+	for (int i = 0 + OAMAddr; i < 0x100; i++) {
+		OAM[i] = ReadByte((byte << 8) + i);
 	}
 }
 
